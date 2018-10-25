@@ -1,0 +1,59 @@
+
+# Created by https://www.gitignore.io/api/swift,xcode,objective-c
+
+### Objective-C ###
+build/
+DerivedData/
+
+## Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+
+## Other
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+autobuild.py
+exportOptions.plist
+
+## Obj-C/Swift specific
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# CocoaPods - Refactored to standalone file
+!Pods
+!Podfile
+!Podfile.lock
+
+# fastlane
+fastlane
+Gemfile
+Gemfile.lock
+
+## Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+
+### Swift ###
+.build/
+
+### Xcode Patch ###
+.DS_Store
+*/.DS_Store
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcworkspace/contents.xcworkspacedata
+/*.gcno
+
+# End of https://www.gitignore.io/api/swift,xcode,objective-c

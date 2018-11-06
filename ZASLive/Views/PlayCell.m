@@ -9,19 +9,20 @@
 #import "PlayCell.h"
 #import "PlatFormRoomsModel.h"
 #import "Tools.h"
+#import <UIImageView+WebCache.h>
+
 @interface PlayCell()
 @property (nonatomic, strong) PlatFormRoomsModel *roomsModel;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGesture;
 @property (weak, nonatomic) IBOutlet UILabel *lblTitle;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleTopY;
 
+
 @end
 
 @implementation PlayCell
 
 - (void)dealloc {
-    [_playerVc pause];
-    [_playerVc stop];
     [_playerVc shutdown];
 }
 
@@ -59,16 +60,25 @@
 }
 
 - (void)setData:(PlatFormRoomsModel *)model {
+    [self.imgVThum sd_setImageWithURL:[NSURL URLWithString:model.live_thumb] placeholderImage:nil options:SDWebImageRefreshCached completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    }];
+    if (_playerVc) {
+        [_playerVc shutdown];
+        [_playerVc.view removeFromSuperview];
+    }
     _roomsModel = model;
     _lblTitle.text = model.title;
-    [_playerVc pause];
-    [_playerVc stop];
-    [_playerVc shutdown];
+    _lblTitle.textColor = [UIColor redColor];
+    [_imgVThum setHidden:YES];
+    
     _playerVc = [[IJKFFMoviePlayerController alloc] initWithContentURLString:_roomsModel.stream withOptions:nil];
-    [_playerVc prepareToPlay];
+    _playerVc.shouldAutoplay = YES;
     _playerVc.view.frame = [UIScreen mainScreen].bounds;
     _playerVc.view.contentMode = UIViewContentModeScaleAspectFit;
     [self.contentView insertSubview:_playerVc.view belowSubview:_lblTitle];
+    [_playerVc prepareToPlay];
+    [_playerVc play];
+    
 }
 
 - (UITapGestureRecognizer *)doubleTapGesture {

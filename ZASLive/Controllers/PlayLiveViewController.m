@@ -13,6 +13,8 @@
 @interface PlayLiveViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *flowLayout;
+@property (nonatomic, strong) NSMutableArray *tempCell;
+@property (nonatomic, assign) BOOL isViewDidLayoutSubviews;
 @end
 
 @implementation PlayLiveViewController
@@ -41,11 +43,17 @@
     _flowLayout.minimumLineSpacing = 0;
     _flowLayout.minimumInteritemSpacing = 0;
     _collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
-    });
+    _collectionView.scrollsToTop = NO;
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    if (_isViewDidLayoutSubviews) {
+        return;
+    }
+    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+    _isViewDidLayoutSubviews = YES;
+}
 
 #pragma mark <UICollectionViewDataSource>
 
@@ -57,9 +65,30 @@
     PlayCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PlayCell" forIndexPath:indexPath];
     PlatFormRoomsModel *m = _dataSources[indexPath.row];
     [cell setData:m];
+    for (PlayCell *c in _tempCell) {
+        if (cell != c) {
+            [c.playerVc pause];
+        }
+    }
+    [self.tempCell addObject:cell];
     return cell;
 }
 
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self fixAudioOverlap:scrollView];
+}
+
+- (void)fixAudioOverlap:(UIScrollView *)scrollView {
+    NSInteger index = scrollView.contentOffset.y / [UIScreen mainScreen].bounds.size.height;
+    PlayCell *cell = (PlayCell *)[_collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]];
+    PlatFormRoomsModel *m = _dataSources[index];
+    [cell setData:m];
+    for (PlayCell *c in _tempCell) {
+        if (cell != c) {
+            [c.playerVc pause];
+        }
+    }
+}
 #pragma mark - lazyLoading
 
 - (NSMutableArray *)dataSources {
@@ -68,6 +97,14 @@
     }
     _dataSources = [NSMutableArray arrayWithCapacity:10];
     return _dataSources;
+}
+
+- (NSMutableArray *)tempCell {
+    if (_tempCell) {
+        return _tempCell;
+    }
+    _tempCell = [NSMutableArray arrayWithCapacity:10];
+    return _tempCell;
 }
 
 @end

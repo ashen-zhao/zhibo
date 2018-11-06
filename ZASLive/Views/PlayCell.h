@@ -12,5 +12,6 @@
 @interface PlayCell : UICollectionViewCell
 @property (nonatomic, strong) IJKFFMoviePlayerController *playerVc;
 @property (weak, nonatomic) IBOutlet UIButton *btnLoved;
+@property (weak, nonatomic) IBOutlet UIImageView *imgVThum;
 - (void)setData:(PlatFormRoomsModel *)model;
 @end

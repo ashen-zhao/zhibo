@@ -35,7 +35,9 @@
             for (NSDictionary *list in tempA) {
                 PlatFormRoomsModel * model = [[PlatFormRoomsModel alloc] init];
                 [model setValuesForKeysWithDictionary:list];
-                [self.dataSources addObject:model];
+                if (model.stream.length > 0) {
+                    [self.dataSources addObject:model];                    
+                }
             }
             [self.collectionView reloadData];
     } failure:^(NSError *error) {

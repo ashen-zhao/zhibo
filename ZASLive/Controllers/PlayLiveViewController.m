@@ -13,7 +13,7 @@
 @interface PlayLiveViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *flowLayout;
-@property (nonatomic, strong) NSMutableArray *tempCell;
+@property (nonatomic, strong) NSMutableSet *tempCell;
 @property (nonatomic, assign) BOOL isViewDidLayoutSubviews;
 @end
 
@@ -65,7 +65,7 @@
     PlayCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PlayCell" forIndexPath:indexPath];
     PlatFormRoomsModel *m = _dataSources[indexPath.row];
     [cell setData:m];
-    for (PlayCell *c in _tempCell) {
+    for (PlayCell *c in self.tempCell) {
         if (cell != c) {
             [c.playerVc pause];
         }
@@ -81,13 +81,17 @@
 - (void)fixAudioOverlap:(UIScrollView *)scrollView {
     NSInteger index = scrollView.contentOffset.y / [UIScreen mainScreen].bounds.size.height;
     PlayCell *cell = (PlayCell *)[_collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]];
-    PlatFormRoomsModel *m = _dataSources[index];
-    [cell setData:m];
-    for (PlayCell *c in _tempCell) {
+    [cell.playerVc prepareToPlay];
+    [cell.playerVc play];
+    for (PlayCell *c in self.tempCell) {
         if (cell != c) {
-            [c.playerVc pause];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.001 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [c.playerVc pause];
+            });
         }
     }
+  
+
 }
 #pragma mark - lazyLoading
 
@@ -99,11 +103,11 @@
     return _dataSources;
 }
 
-- (NSMutableArray *)tempCell {
+- (NSMutableSet *)tempCell {
     if (_tempCell) {
         return _tempCell;
     }
-    _tempCell = [NSMutableArray arrayWithCapacity:10];
+    _tempCell = [NSMutableSet setWithCapacity:10];
     return _tempCell;
 }
 

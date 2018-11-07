@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGesture;
 @property (weak, nonatomic) IBOutlet UILabel *lblTitle;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleTopY;
+@property (nonatomic, strong) IJKFFMoviePlayerController *per_playerVc;
 
 
 @end
@@ -62,10 +63,6 @@
 - (void)setData:(PlatFormRoomsModel *)model {
     [self.imgVThum sd_setImageWithURL:[NSURL URLWithString:model.live_thumb] placeholderImage:nil options:SDWebImageRefreshCached completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
     }];
-    if (_playerVc) {
-        [_playerVc shutdown];
-        [_playerVc.view removeFromSuperview];
-    }
     _roomsModel = model;
     _lblTitle.text = model.title;
     _lblTitle.textColor = [UIColor redColor];
@@ -75,10 +72,16 @@
     _playerVc.shouldAutoplay = YES;
     _playerVc.view.frame = [UIScreen mainScreen].bounds;
     _playerVc.view.contentMode = UIViewContentModeScaleAspectFit;
+    _playerVc.view.alpha = 0.5;
     [self.contentView insertSubview:_playerVc.view belowSubview:_lblTitle];
     [_playerVc prepareToPlay];
     [_playerVc play];
-    
+    if (_per_playerVc) {
+        [_per_playerVc shutdown];
+        [_per_playerVc.view removeFromSuperview];
+    }
+    _per_playerVc = _playerVc;
+
 }
 
 - (UITapGestureRecognizer *)doubleTapGesture {

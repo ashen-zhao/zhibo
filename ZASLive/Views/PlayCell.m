@@ -67,12 +67,12 @@
     _lblTitle.text = model.title;
     _lblTitle.textColor = [UIColor redColor];
     [_imgVThum setHidden:YES];
-    
-    _playerVc = [[IJKFFMoviePlayerController alloc] initWithContentURLString:_roomsModel.stream withOptions:nil];
+    IJKFFOptions *options = [IJKFFOptions optionsByDefault];    
+    _playerVc = [[IJKFFMoviePlayerController alloc] initWithContentURLString:_roomsModel.stream withOptions:options];
     _playerVc.shouldAutoplay = YES;
     _playerVc.view.frame = [UIScreen mainScreen].bounds;
     _playerVc.view.contentMode = UIViewContentModeScaleAspectFit;
-    _playerVc.view.alpha = 0.5;
+
     [self.contentView insertSubview:_playerVc.view belowSubview:_lblTitle];
     [_playerVc prepareToPlay];
     [_playerVc play];

@@ -13,8 +13,8 @@
 @implementation PlatFormRoomsCell
 
 - (void)setData:(PlatFormRoomsModel *)model {
-//    [self.imgVLogo sd_setImageWithURL:[NSURL URLWithString:model.live_thumb] placeholderImage:nil options:SDWebImageRefreshCached completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-//    }];
+    [self.imgVLogo sd_setImageWithURL:[NSURL URLWithString:model.live_thumb] placeholderImage:nil options:SDWebImageRefreshCached completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    }];
     self.lblName.text = model.title;
 }
 @end

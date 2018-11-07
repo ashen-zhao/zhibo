@@ -13,8 +13,8 @@
 @implementation PlatFormListCell
 
 - (void)setData:(PlatFormListModel *)model {
-//    [self.imgvLogo sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:nil options:SDWebImageRefreshCached completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-//    }];
+    [self.imgvLogo sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:nil options:SDWebImageRefreshCached completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    }];
     self.lblName.text = model.name;
 }
 @end
